@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق مبروك الإسلامي الشامل - الإصدار الكامل</title>
+    <style>
+        :root { --main-bg: #f0f2f5; --card-bg: #ffffff; --primary: #2d3e50; --accent: #27ae60; --text: #2d3436; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--main-bg); margin: 0; padding: 10px; color: var(--text); }
+        .app-card { max-width: 450px; margin: 10px auto; background: var(--card-bg); border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .time-display { font-size: 32px; font-weight: bold; margin: 5px 0; }
+        .section { padding: 12px 20px; border-bottom: 1px dotted #ddd; }
+        h2 { font-size: 16px; color: var(--accent); margin-bottom: 8px; }
+        .verse-box { background: #fff9e6; border-right: 4px solid #f1c40f; padding: 15px; border-radius: 8px; font-size: 15px; line-height: 1.8; color: #7f8c8d; text-align: justify; }
+        select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 10px; border: 1px solid #ddd; font-family: inherit; }
+        button { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: bold; }
+        .compass-ring { width: 80px; height: 80px; border: 3px solid #f1c40f; border-radius: 50%; margin: 10px auto; position: relative; }
+        .arrow { width: 3px; height: 35px; background: #e74c3c; position: absolute; bottom: 50%; left: calc(50% - 1.5px); transform-origin: bottom center; transition: 1s; }
+        audio { width: 100%; height: 35px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-card">
+    <div class="header">
+        <div id="date" style="font-size: 14px;">--/--/----</div>
+        <div id="clock" class="time-display">00:00:00</div>
+        <div id="nextPrayer" style="font-size: 12px; color: #f1c40f;">جاري تحديد موقعك...</div>
+    </div>
+
+    <div class="section">
+        <h2>✨ آية اليوم</h2>
+        <div id="dailyVerse" class="verse-box">جاري تدبر آية لك...</div>
+    </div>
+
+    <div class="section">
+        <h2 id="azkarTitle">📖 ذكر الوقت</h2>
+        <div id="azkarContent" style="font-size: 14px; color: #555;">...</div>
+    </div>
+
+    <div class="section" style="background: #fcfcfc;">
+        <h2>📖 المصحف الكامل</h2>
+        <select id="reciter">
+            <option value="https://server7.mp3quran.net/basit">عبد الباسط عبد الصمد</option>
+            <option value="https://server10.mp3quran.net/minsh">محمد صديق المنشاوي</option>
+            <option value="https://server12.mp3quran.net/maher">ماهر المعيقلي</option>
+            <option value="https://server8.mp3quran.net/afs">مشاري العفاسي</option>
+        </select>
+        
+        <select id="surahSelect">
+            <option value="">-- اختر السورة --</option>
+        </select>
+        
+        <button onclick="playQuran()">تشغيل السورة المختارة ▶️</button>
+        <audio id="player" controls></audio>
+    </div>
+
+    <div class="section">
+        <h2>🕋 المؤذن</h2>
+        <select id="azanVoice">
+            <option value="https://www.islamcan.com/common/azan/azan1.mp3">أذان مكة</option>
+            <option value="https://www.islamcan.com/common/azan/azan3.mp3">أذان المدينة</option>
+        </select>
+    </div>
+
+    <div class="section" style="text-align: center;">
+        <div class="compass-ring"><div id="arrow" class="arrow"></div></div>
+        <button onclick="initLocation()">تحديث الموقع والقبلة 🧭</button>
+    </div>
+</div>
+
+<script>
+    let prayers = {};
+    const surahNames = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
+
+    function fillSurahs() {
+        const select = document.getElementById('surahSelect');
+        surahNames.forEach((name, index) => {
+            let surahNum = (index + 1).toString().padStart(3, '0');
+            let option = document.createElement('option');
+            option.value = surahNum;
+            option.text = `${index + 1}. ${name}`;
+            select.appendChild(option);
+        });
+    }
+
+    function getDailyVerse() {
+        const randomAyah = Math.floor(Math.random() * 6236) + 1;
+        fetch(`https://api.alquran.cloud/v1/ayah/${randomAyah}`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('dailyVerse').innerText = `"${data.data.text}" [${data.data.surah.name}]`;
+        });
+    }
+
+    function initLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                fetch(`https://api.aladhan.com/v1/timings?latitude=${pos.coords.latitude}&longitude=${pos.coords.longitude}&method=5`)
+                .then(res => res.json())
+                .then(d => {
+                    prayers = d.data.timings;
+                    document.getElementById('nextPrayer').innerText = "تم ضبط المواقيت لموقعك";
+                });
+                document.getElementById('arrow').style.transform = `rotate(135deg)`;
+            });
+        }
+    }
+
+    function updateApp() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString('ar-EG');
+        document.getElementById('date').innerText = now.toLocaleDateString('ar-EG');
+
+        const hour = now.getHours();
+        const isSabah = (hour >= 5 && hour < 12);
+        document.getElementById('azkarTitle').innerText = isSabah ? "✨ أذكار الصباح" : "✨ أذكار المساء";
+        document.getElementById('azkarContent').innerText = isSabah ? "أصبحنا وأصبح الملك لله والحمد لله." : "أمسيا وأمسى الملك لله والحمد لله.";
+
+        const currentTime = now.toLocaleTimeString('ar-EG', {hour12: false}).substring(0, 5);
+        for (let p in prayers) {
+            if (prayers[p] === currentTime) {
+                new Audio(document.getElementById('azanVoice').value).play();
+                alert("حان وقت صلاة " + p);
+            }
+        }
+    }
+
+    function playQuran() {
+        const server = document.getElementById('reciter').value;
+        const surah = document.getElementById('surahSelect').value;
+        const player = document.getElementById('player');
+        if(!surah) { alert("اختر السورة أولاً"); return; }
+        player.src = `${server}/${surah}.mp3`;
+        player.play();
+    }
+
+    setInterval(updateApp, 1000);
+    window.onload = () => { initLocation(); getDailyVerse(); fillSurahs(); };
+</script>
+
+</body>
+</html>
