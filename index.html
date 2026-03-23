@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق مبروك الإسلامي الشامل - الإصدار الكامل</title>
+    
+    <title>تطبيق مبروك الإسلامي - مصحف، أذان، وقبلة</title>
+    <meta name="description" content="تطبيق إسلامي شامل يضم المصحف الكامل بصوت كبار القراء، مواقيت الصلاة الدقيقة حسب موقعك، بوصلة القبلة، وأذكار الصباح والمساء.">
+    <meta name="keywords" content="قرآن كريم، مواقيت الصلاة، اتجاه القبلة، أذكار، تطبيق إسلامي، عبد الباسط، المنشاوي، مبروك">
+    <meta name="author" content="Mabrouk">
+
     <style>
         :root { --main-bg: #f0f2f5; --card-bg: #ffffff; --primary: #2d3e50; --accent: #27ae60; --text: #2d3436; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--main-bg); margin: 0; padding: 10px; color: var(--text); }
@@ -54,14 +59,6 @@
         
         <button onclick="playQuran()">تشغيل السورة المختارة ▶️</button>
         <audio id="player" controls></audio>
-    </div>
-
-    <div class="section">
-        <h2>🕋 المؤذن</h2>
-        <select id="azanVoice">
-            <option value="https://www.islamcan.com/common/azan/azan1.mp3">أذان مكة</option>
-            <option value="https://www.islamcan.com/common/azan/azan3.mp3">أذان المدينة</option>
-        </select>
     </div>
 
     <div class="section" style="text-align: center;">
@@ -117,14 +114,6 @@
         const isSabah = (hour >= 5 && hour < 12);
         document.getElementById('azkarTitle').innerText = isSabah ? "✨ أذكار الصباح" : "✨ أذكار المساء";
         document.getElementById('azkarContent').innerText = isSabah ? "أصبحنا وأصبح الملك لله والحمد لله." : "أمسيا وأمسى الملك لله والحمد لله.";
-
-        const currentTime = now.toLocaleTimeString('ar-EG', {hour12: false}).substring(0, 5);
-        for (let p in prayers) {
-            if (prayers[p] === currentTime) {
-                new Audio(document.getElementById('azanVoice').value).play();
-                alert("حان وقت صلاة " + p);
-            }
-        }
     }
 
     function playQuran() {
